@@ -1,4 +1,8 @@
 set.seed(85)
+
+
+library("BiocParallel")
+register(MulticoreParam(20))
 # load additional functions
 # global variable
 # split into train, test

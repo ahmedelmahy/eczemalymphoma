@@ -102,38 +102,39 @@ getFPKMFCs <- function(mat.norm, ddsDESeqObject, verbose = FALSE) {
 #
 # #dds <- dds.ecz
 # #n_test = n_test_ecz
-# train_test_split <- function(dds, n_test){
-#     if(test_now) {
-#         # reproduce the DESeq results
-#         # get the counts
-#         cts <- counts(dds)
-#         coldata <- colData(dds)
-#         if (!exists("test_s")) stop("you should train first")
-#         # include the test part
-#         coldata <- coldata[test_s,]
-#         cts <- cts[,test_s]
-#
-#     }else{
-#         # reproduce the DESeq results
-#         # get the counts
-#         cts <- counts(dds, normalized = FALSE)
-#         coldata <- colData(dds)
-#         # define test_s as a global variable
-#         test_s <<- which(coldata$pedigree %in% sample(unique(coldata$pedigree),
-#                                                       n_test))
-#         # exclude the test part
-#         coldata <- coldata[-test_s,]
-#         cts <- cts[,-test_s]
-#     }
-#     dds0 <- DESeqDataSetFromMatrix(countData = cts,
-#                                    colData = coldata,
-#                                    design= ~ pedigree + condition )
-#     dds0 <- DESeq(dds0,full = ~ pedigree + condition, reduced = ~pedigree,
-#                   test="LRT")
-#     return(dds0)
-# }
-#
-#
-#
-#
-#
+train_test_split <- function(dds, n_test){
+    if(test_now) {
+        # reproduce the DESeq results
+        # get the counts
+        cts <- counts(dds)
+        coldata <- colData(dds)
+        if (!exists("test_s")) stop("you should train first")
+        # include the test part
+        coldata <- coldata[test_s,]
+        cts <- cts[,test_s]
+
+    }else{
+        # reproduce the DESeq results
+        # get the counts
+        cts <- counts(dds, normalized = FALSE)
+        coldata <- colData(dds)
+        # define test_s as a global variable
+        test_s <<- which(coldata$pedigree %in% sample(unique(coldata$pedigree),
+                                                      n_test))
+        # exclude the test part
+        coldata <- coldata[-test_s,]
+        cts <- cts[,-test_s]
+    }
+    dds0 <- DESeqDataSetFromMatrix(countData = cts,
+                                   colData = coldata,
+                                   design= ~ pedigree + condition )
+    library("BiocParallel")
+    dds0 <- DESeq(dds0,full = ~ pedigree + condition, reduced = ~pedigree,
+                  test="LRT",parallel = TRUE, BPPARAM=MulticoreParam(24))
+    return(dds0)
+}
+
+
+
+
+

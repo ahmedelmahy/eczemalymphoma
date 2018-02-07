@@ -13,6 +13,9 @@ dds.ecz <- ddsDESeqObject
 # remove the individual which are both affected skin
 dds.ecz <- dds.ecz[,colData(dds.ecz)$pedigree!="10068"]
 
+# train_test = TRUE
+# test_now = FALSE
+# n_test_ecz = 1
 # if(train_test) {
 #     dds.ecz <- train_test_split(dds.ecz,n_test_ecz)
 # }
