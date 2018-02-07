@@ -2,6 +2,7 @@ set.seed(85)
 
 
 library("BiocParallel")
+library("caTools") # for sample.split()
 register(MulticoreParam(20))
 # load additional functions
 # global variable
@@ -44,10 +45,11 @@ new.data$class <- ifelse(new.data$class == "lym",1,0)  # models will predict lym
 
 #-------------------------------------------------------------------------------
 # split the data into train and test to compare different models
-train= sample(dim(new.data)[1],25)
+# train= sample(dim(new.data)[1],40)
+sample <- sample.split(new.data$class, SplitRatio = .8)
 # for models that require class to be part of the dataset
-d_with_class_train <- new.data[train,]
-d_with_class_test <- new.data[-train,]
+d_with_class_train <- new.data[sample,]
+d_with_class_test <- new.data[!sample,]
 
 # for models that require class to be a separate variable
 # and for models that require the class to be factor
@@ -61,19 +63,3 @@ y_test <- d_test$class
 y_test_factor <- as.factor(ifelse(y_test == 0, "ecz","lym"))
 
 d_test$class <- NULL
-
-
-
-#-------------------------------------------------------------------------------
-# configure caret
-# parameter tuning
-# modify the methods used by Caret for CV
-# fitControl(list)
-fitControl <- trainControl(method = "LOOCV", sampling = "up",
-                           classProbs = T, summaryFunction = twoClassSummary,
-                           verboseIter = TRUE)
-
-#fitControl <- trainControl(method = "none",classProbs = TRUE,summaryFunction = twoClassSummary,
- #                          verboseIter = TRUE)
-
-#fitControl <- trainControl(method = "LOOCV", sampling = "up", classProbs = T, summaryFunction = twoClassSummary)

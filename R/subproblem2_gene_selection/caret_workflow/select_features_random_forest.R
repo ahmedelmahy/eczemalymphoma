@@ -2,12 +2,41 @@
 
 # [question] what exactly is the tuning parameter here ?
 # step 1. build a model
-rfFit.up <- caret::train(x = d_train, y = y_train_factor,
+rfFit <- caret::train(x = d_train, y = y_train_factor,
                          method="rf",
                          trControl =fitControl,
                          metric = "ROC")
 
+plot(varImp(train_cv_1), main = "Random Forest - Variable Importance plot")
 
+l <- list(NA)
+a<-balanced_sampling_methods_with_ROC(d_train = d_train,
+                                   y_train_factor = y_train_factor,
+                                   d_test = d_test,
+                                   y_test_factor = y_test_factor,
+                                   model_method = "rf",
+                                   fitControl = fitControl,
+                                   y_factor_to_predict = y_factor_to_predict,
+                                   sampling_method = "smote",
+                                   d_with_class_test = d_with_class_test)
+
+
+
+b<-balanced_sampling_methods_with_ROC(d_train = d_train,
+                                         y_train_factor = y_train_factor,
+                                         d_test = d_test,
+                                         y_test_factor = y_test_factor,
+                                         model_method = "rf",
+                                         fitControl = fitControl,
+                                         y_factor_to_predict = y_factor_to_predict,
+                                         sampling_method = "up",
+                                         d_with_class_test = d_with_class_test)
+
+plot_multipe_rocs(list(a,b))
+length(l)
+
+l[1] <- 4
+l
 rf.feats <- lapply(1:20, FUN=function(i) {
     cat(i)
     rfFit.up <- caret::train(x = d_train, y = y_train_factor,
