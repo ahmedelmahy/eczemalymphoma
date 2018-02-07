@@ -13,6 +13,11 @@ dds.ecz <- ddsDESeqObject
 # remove the individual which are both affected skin
 dds.ecz <- dds.ecz[,colData(dds.ecz)$pedigree!="10068"]
 
+# if(train_test) {
+#     dds.ecz <- train_test_split(dds.ecz,n_test_ecz)
+# }
+
+
 # select differential expressed genes
 ecz.sel <- getDEgenes(dds.ecz,verbose = T) # lfc and fdr threshhold for degs
 

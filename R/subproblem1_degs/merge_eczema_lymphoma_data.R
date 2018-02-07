@@ -1,8 +1,25 @@
 # genes to be used for classifier
 # [question] genes that are in both datasets (the differentially expressed genes that maybe in either dataset or gene.mat)
-gene.mat <- merge(data.frame(lym.sel), data.frame(ecz.sel), by="entrez", all=T)
+
+if(use_top_fifty){
+    df_lym <- data.frame(lym.sel) %>%
+        arrange(desc(log2FoldChange),padj)%>%
+        filter(between(row_number(),1,17))
+    df_ecz <- data.frame(ecz.sel) %>%
+        arrange(desc(log2FoldChange),padj) %>%
+        filter(between(row_number(),1,17))
+    gene.mat <- full_join(df_lym, df_ecz,by = "entrez")
+    intersect <- df_lym$entrez[which(df_lym$entrez %in% df_ecz$entrez)]
+} else {
+    gene.mat <- merge(data.frame(lym.sel), data.frame(ecz.sel), by="entrez", all=T)
+    intersect <- data.frame(lym.sel)$entrez[which(data.frame(lym.sel)$entrez %in% data.frame(ecz.sel)$entrez)]
+}
+
+
+#
 if(TRUE) cat("\n Dimentions of lymphoma genes ",dim(data.frame(lym.sel))," \n\t eczema genes",
-    dim(data.frame(ecz.sel)),"\n\t now all genes included in gene mat are",dim(gene.mat))
+    dim(data.frame(ecz.sel)),"\n\t now all genes included in gene mat are",dim(gene.mat)," and
+    intersected in ", length(intersect), " genes. which are : ",paste0(intersect,collapse = ","))
 # data matrix from the two classes
 lym.mat <- data.frame(lym.fcs[which(rownames(lym.fcs)%in%gene.mat$entrez), ])
 ecz.mat <- data.frame(ecz.fcs[which(rownames(ecz.fcs)%in%gene.mat$entrez), ])

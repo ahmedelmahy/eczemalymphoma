@@ -1,13 +1,29 @@
 set.seed(85)
 # load additional functions
-source("R/classifier_funcs.R")
-source("R/load.R")
-source("R/read_lymphoma_data.R")
-source("R/read_eczema_data.R")
-source("R/merge_eczema_lymphoma_data.R")
+# global variable
+# split into train, test
+# train_test = TRUE
+# # if test_now then all functions will run on the test part only
+# test_now = FALSE
+# # nrow of test data
+# n_test_lym = 3
+# n_test_ecz = 3
+
+# degs selection parameters
+# padj_max_ecz = .01
+# padj_max_lym = .01
+# lfc_min_ecz = 3
+# lfc_min_lym = 3
+
+source("R/subproblem1_degs/DESeq_processing_functions.R")
+source("R/subproblem1_degs/load.R")
+source("R/subproblem1_degs/read_lymphoma_data.R")
+source("R/subproblem1_degs/read_eczema_data.R")
+use_top_fifty = FALSE
+source("R/subproblem1_degs/merge_eczema_lymphoma_data.R")
 
 #register multicore parallel
-library(TSA)
+#library(TSA)
 #library(doMC)
 #registerDoMC(2)
 
@@ -24,7 +40,7 @@ new.data$class <- ifelse(new.data$class == "lym",1,0)  # models will predict lym
 
 #-------------------------------------------------------------------------------
 # split the data into train and test to compare different models
-train= sample(dim(new.data)[1],30)
+train= sample(dim(new.data)[1],25)
 # for models that require class to be part of the dataset
 d_with_class_train <- new.data[train,]
 d_with_class_test <- new.data[-train,]
@@ -49,7 +65,7 @@ d_test$class <- NULL
 # parameter tuning
 # modify the methods used by Caret for CV
 # fitControl(list)
-fitControl <- trainControl(method = "cv", sampling = "up",
+fitControl <- trainControl(method = "LOOCV", sampling = "up",
                            classProbs = T, summaryFunction = twoClassSummary,
                            verboseIter = TRUE)
 

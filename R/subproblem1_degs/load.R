@@ -17,4 +17,3 @@ library(leaps) # stepwise feature selection
 #   GRangesList of the human transcriptome
 
 load("data/exons_data.RData")
-

@@ -26,6 +26,8 @@ glmFit.up <- train(x = d_train, y = y_train_factor,
                    trControl = fitControl,
                    metric = "ROC")
 
+
+
 # train the model several times using only the best parameters
 glm.feats <- lapply(1:20, FUN=function(i) {
     cat(i)
