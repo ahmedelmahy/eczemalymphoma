@@ -6,10 +6,8 @@ cts <- counts(dds.lym, normalized = FALSE)
 # # dds0 <- DESeqDataSetFromMatrix(countData = cts,
 # #                               colData = coldata,
 # #                               design= ~ pedigree + condition )
-library("BiocParallel")
-
- dds0 <- DESeq(dds0,full = ~ pedigree + condition, reduced = ~pedigree,
-                          test="LRT", parallel=TRUE, BPPARAM=MulticoreParam(3))
+# dds0 <- DESeq(dds0,full = ~ pedigree + condition, reduced = ~pedigree,
+#                           test="LRT", parallel=TRUE, BPPARAM=MulticoreParam(3))
 # # lym.sel0 <- getDEgenes (dds0, verbose = T) # lfc and fdr threshhold for degs
 # # lym.norm0 <- getFPKMs (dds0, ebg, verbose = T) # fpkm calculations
 # # lym.fcs0 <- getFPKMFCs(lym.norm0, dds0,verbose = TRUE)

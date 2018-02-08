@@ -19,7 +19,6 @@ register(MulticoreParam(20))
 # padj_max_lym = .01
 # lfc_min_ecz = 3
 # lfc_min_lym = 3
-
 source("R/subproblem1_degs/DESeq_processing_functions.R")
 source("R/subproblem1_degs/load.R")
 source("R/subproblem1_degs/read_lymphoma_data.R")
@@ -46,7 +45,8 @@ new.data$class <- ifelse(new.data$class == "lym",1,0)  # models will predict lym
 #-------------------------------------------------------------------------------
 # split the data into train and test to compare different models
 # train= sample(dim(new.data)[1],40)
-sample <- sample.split(new.data$class, SplitRatio = .8)
+sample <- sample.split(new.data$class, SplitRatio = .95)
+
 # for models that require class to be part of the dataset
 d_with_class_train <- new.data[sample,]
 d_with_class_test <- new.data[!sample,]

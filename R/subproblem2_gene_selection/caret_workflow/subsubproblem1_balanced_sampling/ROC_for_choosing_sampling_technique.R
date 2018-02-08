@@ -1,19 +1,8 @@
-
-test_roc <- function(model, data) {
-    roc(data$class,
-        predict(model, data, type = "prob")[, "ecz"])
-}
-
-
 balanced_sampling_methods_with_ROC <- function(d_train,
                                                y_train_factor,
-                                               d_test,
-                                               y_test_factor,
                                                model_method,
                                                fitControl,
-                                               y_factor_to_predict,
-                                               sampling_method,
-                                               d_with_class_test){
+                                               sampling_method, ...){
     switch(sampling_method,
            original = {
                message("doing the original model")
@@ -36,7 +25,7 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                                    method=model_method,
                                    weights = model_weights,
                                    trControl =fitControl,
-                                   metric = "ROC")
+                                   metric = "ROC", ...)
            },
            up = {
                message("# using up sampling")
@@ -46,7 +35,8 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                             method =model_method,
                             verbose = FALSE,
                             metric = "ROC",
-                            trControl = fitControl)
+                            trControl = fitControl,...)
+
            },
            down = {
                message("# using down sampling")
@@ -56,7 +46,7 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                             method = model_method,
                             verbose = FALSE,
                             metric = "ROC",
-                            trControl = fitControl)
+                            trControl = fitControl,...)
            },
            smote = {
                message("# using smote sampling")
@@ -66,32 +56,55 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                             method = model_method,
                             verbose = FALSE,
                             metric = "ROC",
-                            trControl = fitControl)
+                            trControl = fitControl,...)
            })
-    fit_roc <- test_roc(model = fit, data = d_with_class_test)
-    message(auc(fit_roc))
-    return(fit_roc)
+    return(fit)
 }
 
-plot_multipe_rocs <- function(model_list_roc){
-    results_list_roc <- list(NA)
-    num_mod <- 1
-    for(the_roc in model_list_roc){
+plot_multipe_rocs <- function(model_list, use_test_data = TRUE, y_test_factor = NA,
+                              d_with_class_test = NA, variable_of_interest = "ecz"){
+    if (use_test_data){
+        results_list_roc <- list(NA)
+        num_mod <- 1
+        # fit = model_list[1]
+        for(fit in model_list){
+            message("ROC for test data")
+            fit_probs <- predict(fit, d_with_class_test,
+                                 type = "prob")[, variable_of_interest]
+            #message(auc(fit_roc))
+            # roc for the test dataset
+            myRoc_on_test_data <- roc(predictor=fit_probs,
+                                      response=y_test_factor,
+                                      levels=rev(levels(y_test_factor)))
 
-        results_list_roc[[num_mod]] <-
-            data_frame(tpr = the_roc$sensitivities,
-                       fpr = 1 - the_roc$specificities,
-                       model = names(model_list)[num_mod])
-        num_mod <- num_mod + 1
+            message(auc(myRoc_on_test_data))
+            results_list_roc[[num_mod]] <- data_frame(
+                True_positive_rate = myRoc_on_test_data$sensitivities,
+                False_positive_rate = 1 - myRoc_on_test_data$specificities,
+                model = names(model_list)[num_mod])
+            num_mod <- num_mod + 1 }
+    } else {
+        message("ROC for training data")
+        results_list_roc <- list(NA)
+        num_mod <- 1
+        for(model in model_list){
+            myRoc_on_train_data <- roc(predictor = model$pred$lym,
+                                       response = model$pred$obs,
+                                       positive = variable_of_interest)
+            message(auc(myRoc_on_train_data))
+            results_list_roc[[num_mod]] <- data_frame(
+                True_positive_rate = myRoc_on_train_data$sensitivities,
+                False_positive_rate = 1 - myRoc_on_train_data$specificities,
+                model = names(model_list)[num_mod])
+            num_mod <- num_mod + 1
+        }
     }
+
     results_df_roc <- bind_rows(results_list_roc)
     # Plot ROC curve for all 5 models
-    ggplot(aes(x = fpr,  y = tpr, group = model), data = results_df_roc) +
+    ggplot(aes(x = False_positive_rate,  y = True_positive_rate, group = model), data = results_df_roc) +
         geom_line(aes(color = model), size = 1) +
         geom_abline(intercept = 0, slope = 1, color = "gray", size = 1) +
         theme_bw(base_size = 18)
 }
-
-
-
 

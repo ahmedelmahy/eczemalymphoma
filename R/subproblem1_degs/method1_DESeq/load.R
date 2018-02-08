@@ -10,6 +10,7 @@ library(plyr) # rbind.fill
 library(reshape2) # melt
 library(tidyverse)
 library(leaps) # stepwise feature selection
+library("BiocParallel")
 #-------------------------------------------------------------------------------
 #loads bamfiles and ebg data
 # 1- bamfiles(Formal class BamFileList) ?
