@@ -11,8 +11,8 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                                    trControl =fitControl,
                                    metric = "ROC")
 
-               message("#fitControl now uses the same seed to ensure same cross-validation splits")
-               fitControl$seeds <<- fit$control$seeds
+               #message("#fitControl now uses the same seed to ensure same cross-validation splits")
+               #fitControl$seeds <<- fit$control$seeds
            } ,
            weights = {
                message("#using weights for sampling")
@@ -111,6 +111,7 @@ compare_sampling_approaches_on_test_data <- function(model_list,
     num_mod <- 1
     df <- tibble("sampling_approach" = 0, "class" = "0",
                  "probability_of_success" = 0)
+    #fit <- model_list[[1]]
 for(fit in model_list){
     fit_probs <- predict(fit, d_with_class_test,type = "prob")
     l <- dim(fit_probs)[1]
