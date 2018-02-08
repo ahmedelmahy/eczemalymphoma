@@ -1,7 +1,4 @@
 # selecting important variables using random forest
-
-
-
 rf.feats <- lapply(1:2, FUN=function(i) {
     if (i == 1){
         RF_up_sampling <-
@@ -30,8 +27,9 @@ rf.feats <- lapply(1:2, FUN=function(i) {
     }
 })
 
-rf <- sort(table(unlist(lapply(rf.feats, FUN=function(x)x$genes))), decreasing=T)[1:15]
-rf <- cbind(names(rf), rf)
+rf <- sort(table(unlist(lapply(rf.feats, FUN=function(x)x$genes))), decreasing=T)
+
+rf <- data.frame(rf)
 
 
 

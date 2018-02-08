@@ -33,7 +33,6 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                fit <- train(y = y_train_factor,
                             x = d_with_class_train,
                             method =model_method,
-                            verbose = FALSE,
                             metric = "ROC",
                             trControl = fitControl,...)
 
@@ -44,7 +43,6 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                fit <- train(y = y_train_factor,
                             x = d_with_class_train,
                             method = model_method,
-                            verbose = FALSE,
                             metric = "ROC",
                             trControl = fitControl,...)
            },
@@ -54,7 +52,6 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                fit <- train(y = y_train_factor,
                             x = d_with_class_train,
                             method = model_method,
-                            verbose = FALSE,
                             metric = "ROC",
                             trControl = fitControl,...)
            })
@@ -107,4 +104,42 @@ plot_multipe_rocs <- function(model_list, use_test_data = TRUE, y_test_factor = 
         geom_abline(intercept = 0, slope = 1, color = "gray", size = 1) +
         theme_bw(base_size = 18)
 }
+
+# compare perfomance of different sampling approaches on test set
+compare_sampling_approaches_on_test_data <- function(model_list,
+                                                     d_with_class_test){
+    num_mod <- 1
+    df <- tibble("sampling_approach" = 0, "class" = "0",
+                 "probability_of_success" = 0)
+for(fit in model_list){
+    fit_probs <- predict(fit, d_with_class_test,type = "prob")
+    l <- dim(fit_probs)[1]
+    for (i in 1:l) {
+        probability_of_success <- fit_probs[i,y_test_factor[i]]
+        df[dim(df)[1]+1,] <- data_frame(
+            "sampling_approach" = names(model_list)[num_mod],
+            "class" = as.character(y_test_factor[i]),
+            "probability_of_success" = probability_of_success
+        )
+    }
+    num_mod <- num_mod + 1
+}
+    df<- df[-1,]
+    df_grouped <-df %>%
+        group_by(sampling_approach,class)%>%
+        summarise(mean(probability_of_success)) %>%
+        set_colnames(c("sampling_approach","class",
+                 "mean_of_probabilities_of_choosing_the_correct_class"))
+    p <-ggplot(df_grouped,aes(sampling_approach,
+                          mean_of_probabilities_of_choosing_the_correct_class,
+                          fill = class))+
+        geom_bar(stat="identity", position=position_dodge())+
+        theme(axis.text.x = element_text(angle = 90))
+
+    print(p )
+
+
+
+    }
+
 

@@ -1,9 +1,9 @@
 set.seed(85)
-
+library(magrittr)
 
 library("BiocParallel")
 library("caTools") # for sample.split()
-register(MulticoreParam(20))
+register(MulticoreParam(24))
 # load additional functions
 # global variable
 # split into train, test
@@ -19,12 +19,12 @@ register(MulticoreParam(20))
 # padj_max_lym = .01
 # lfc_min_ecz = 3
 # lfc_min_lym = 3
-source("R/subproblem1_degs/DESeq_processing_functions.R")
-source("R/subproblem1_degs/load.R")
-source("R/subproblem1_degs/read_lymphoma_data.R")
-source("R/subproblem1_degs/read_eczema_data.R")
+source("R/subproblem1_degs/method1_DESeq/DESeq_processing_functions.R")
+source("R/subproblem1_degs/method1_DESeq/load.R")
+source("R/subproblem1_degs/method1_DESeq/read_lymphoma_data.R")
+source("R/subproblem1_degs/method1_DESeq/read_eczema_data.R")
 use_top_fifty = FALSE
-source("R/subproblem1_degs/merge_eczema_lymphoma_data.R")
+source("R/subproblem1_degs/method1_DESeq/merge_eczema_lymphoma_data.R")
 
 #register multicore parallel
 #library(TSA)
@@ -45,7 +45,7 @@ new.data$class <- ifelse(new.data$class == "lym",1,0)  # models will predict lym
 #-------------------------------------------------------------------------------
 # split the data into train and test to compare different models
 # train= sample(dim(new.data)[1],40)
-sample <- sample.split(new.data$class, SplitRatio = .95)
+sample <- sample.split(new.data$class, SplitRatio = .8)
 
 # for models that require class to be part of the dataset
 d_with_class_train <- new.data[sample,]

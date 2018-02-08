@@ -40,4 +40,4 @@ plot_multipe_rocs(model_list,
                   y_test_factor = y_test_factor,
                   d_with_class_test = d_with_class_test,
                   variable_of_interest = "ecz")
-
+compare_sampling_approaches_on_test_data(model_list,d_with_class_test)
