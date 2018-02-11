@@ -9,7 +9,7 @@ balanced_sampling_methods_with_ROC <- function(d_train,
                fit <- caret::train(x = d_train, y = y_train_factor,
                                    method=model_method,
                                    trControl =fitControl,
-                                   metric = "ROC")
+                                   metric = "ROC",...)
 
                #message("#fitControl now uses the same seed to ensure same cross-validation splits")
                #fitControl$seeds <<- fit$control$seeds
@@ -30,8 +30,8 @@ balanced_sampling_methods_with_ROC <- function(d_train,
            up = {
                message("# using up sampling")
                fitControl$sampling <- "up"
-               fit <- train(y = y_train_factor,
-                            x = d_with_class_train,
+               fit <- train(x = d_train,
+                            y = y_train_factor,
                             method =model_method,
                             metric = "ROC",
                             trControl = fitControl,...)
@@ -40,8 +40,8 @@ balanced_sampling_methods_with_ROC <- function(d_train,
            down = {
                message("# using down sampling")
                fitControl$sampling <- "down"
-               fit <- train(y = y_train_factor,
-                            x = d_with_class_train,
+               fit <- train(x = d_train,
+                            y = y_train_factor,
                             method = model_method,
                             metric = "ROC",
                             trControl = fitControl,...)
@@ -49,8 +49,8 @@ balanced_sampling_methods_with_ROC <- function(d_train,
            smote = {
                message("# using smote sampling")
                fitControl$sampling <- "smote"
-               fit <- train(y = y_train_factor,
-                            x = d_with_class_train,
+               fit <- train(x = d_train,
+                            y = y_train_factor,
                             method = model_method,
                             metric = "ROC",
                             trControl = fitControl,...)
@@ -58,8 +58,11 @@ balanced_sampling_methods_with_ROC <- function(d_train,
     return(fit)
 }
 
-plot_multipe_rocs <- function(model_list, use_test_data = TRUE, y_test_factor = NA,
-                              d_with_class_test = NA, variable_of_interest = "ecz"){
+plot_multipe_rocs <- function(model_list,titles, use_test_data = FALSE,
+                              y_test_factor = NA, d_with_class_test = NA,
+                              variable_of_interest = "ecz"){
+    if (length(model_list) != length(titles)) {stop("titles are not the same
+                                                       length as selected_genes_list")}
     if (use_test_data){
         results_list_roc <- list(NA)
         num_mod <- 1
@@ -78,7 +81,7 @@ plot_multipe_rocs <- function(model_list, use_test_data = TRUE, y_test_factor = 
             results_list_roc[[num_mod]] <- data_frame(
                 True_positive_rate = myRoc_on_test_data$sensitivities,
                 False_positive_rate = 1 - myRoc_on_test_data$specificities,
-                model = names(model_list)[num_mod])
+                model = titles[num_mod])
             num_mod <- num_mod + 1 }
     } else {
         message("ROC for training data")
@@ -92,7 +95,7 @@ plot_multipe_rocs <- function(model_list, use_test_data = TRUE, y_test_factor = 
             results_list_roc[[num_mod]] <- data_frame(
                 True_positive_rate = myRoc_on_train_data$sensitivities,
                 False_positive_rate = 1 - myRoc_on_train_data$specificities,
-                model = names(model_list)[num_mod])
+                model = titles[num_mod])
             num_mod <- num_mod + 1
         }
     }
@@ -107,18 +110,21 @@ plot_multipe_rocs <- function(model_list, use_test_data = TRUE, y_test_factor = 
 
 # compare perfomance of different sampling approaches on test set
 compare_sampling_approaches_on_test_data <- function(model_list,
+                                                     titles,
                                                      d_with_class_test){
+    if (length(model_list) != length(titles)) {stop("titles are not the same
+                                                       length as selected_genes_list")}
     num_mod <- 1
     df <- tibble("sampling_approach" = 0, "class" = "0",
                  "probability_of_success" = 0)
-    #fit <- model_list[[1]]
+    #fit <- RF_up_sampling
 for(fit in model_list){
     fit_probs <- predict(fit, d_with_class_test,type = "prob")
     l <- dim(fit_probs)[1]
     for (i in 1:l) {
         probability_of_success <- fit_probs[i,y_test_factor[i]]
         df[dim(df)[1]+1,] <- data_frame(
-            "sampling_approach" = names(model_list)[num_mod],
+            "sampling_approach" = titles[num_mod],
             "class" = as.character(y_test_factor[i]),
             "probability_of_success" = probability_of_success
         )
