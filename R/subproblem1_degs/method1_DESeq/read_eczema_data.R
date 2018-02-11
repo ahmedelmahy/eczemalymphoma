@@ -4,9 +4,7 @@
 # 1. dds.test(DESeqDataSet)
 # 2. ddsDESeqObject (DESeqDataSet)
 # 3. res (data.frame 25673 x 13 )  >> not included in the analysis
-
 load("data/ecz_ddsobj.RData")
-
 # rename ddsDESeqObject
 dds.ecz <- ddsDESeqObject
 

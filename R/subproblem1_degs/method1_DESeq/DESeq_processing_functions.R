@@ -82,6 +82,8 @@ getFPKMs <- function(ddsDESeqObject, ebg, verbose = FALSE) {
 # 2. ddsDESeqObject: the DESeqDataSet of the same experiment
 # returns a matrix of log2(treatment/ normal )
 
+
+
 getFPKMFCs <- function(mat.norm, ddsDESeqObject, verbose = FALSE) {
     # remove spaces and use the sample id to be colname for mat.norm
     # [question] here I assume pedigree is just the id of the sample
@@ -93,6 +95,9 @@ getFPKMFCs <- function(mat.norm, ddsDESeqObject, verbose = FALSE) {
     mat.ni <- mat.ni[, colnames(mat.i)]
     # unify both by dividing
     mat.fcs <- log2((mat.i/mat.ni) + 1)
+    #mat.fcs <- (scale(mat.i)-scale(mat.ni))   # worked bad
+    #mat.fcs <- (scale(mat.i)/scale(mat.ni))   # worked bad
+
     if (verbose) cat("\n the input matrix dimentions was ",dim(mat.norm),
                      "\n mat.ni is ",dim(mat.ni),
                      "\n mat.i is ",dim(mat.i), "and the output mat.fcs is",

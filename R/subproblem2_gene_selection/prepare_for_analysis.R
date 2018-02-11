@@ -3,7 +3,7 @@ library(magrittr)
 
 library("BiocParallel")
 library("caTools") # for sample.split()
-register(MulticoreParam(24))
+register(MulticoreParam(2))
 # load additional functions
 # global variable
 # split into train, test
@@ -19,6 +19,7 @@ register(MulticoreParam(24))
 # padj_max_lym = .01
 # lfc_min_ecz = 3
 # lfc_min_lym = 3
+source("R/load.R")
 source("R/subproblem1_degs/method1_DESeq/DESeq_processing_functions.R")
 source("R/subproblem1_degs/method1_DESeq/load.R")
 source("R/subproblem1_degs/method1_DESeq/read_lymphoma_data.R")
@@ -37,10 +38,16 @@ source("R/subproblem1_degs/method1_DESeq/merge_eczema_lymphoma_data.R")
 # because variables as only numbers doesn't fit in formulas
 #-------------------------------------------------------------------------------
 # step 0 tidy the data
+all_data_genes <- new.data
+all_data_genes$class <- NULL
+y_all_data <- new.data$class
 # two datasets with only numbers
 
 # binarize the class variable
+
+
 new.data$class <- ifelse(new.data$class == "lym",1,0)  # models will predict lymphoma
+
 
 #-------------------------------------------------------------------------------
 # split the data into train and test to compare different models
@@ -63,3 +70,6 @@ y_test <- d_test$class
 y_test_factor <- as.factor(ifelse(y_test == 0, "ecz","lym"))
 
 d_test$class <- NULL
+
+
+rm(new.data)

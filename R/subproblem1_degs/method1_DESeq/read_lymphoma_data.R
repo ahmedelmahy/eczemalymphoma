@@ -4,7 +4,6 @@
 # 2. ddsDESeqObject (DESeqDataSet)
 # 3. res (data.frame 25673 x 13 )  >> not included in the analysis
 load("data/lym_ddsobj.RData")
-
 # rename ddsDESeqObject
 dds.lym <- ddsDESeqObject
 
