@@ -94,8 +94,8 @@ getFPKMFCs <- function(mat.norm, ddsDESeqObject, verbose = FALSE) {
     # make sure mat.ni are the same samples as mat.i
     mat.ni <- mat.ni[, colnames(mat.i)]
     # unify both by dividing
-    mat.fcs <- log2((mat.i/mat.ni) + 1)
-    #mat.fcs <- (scale(mat.i)-scale(mat.ni))   # worked bad
+    #mat.fcs <- log2((mat.i/mat.ni) + 1)
+    mat.fcs <- (scale(mat.i)-scale(mat.ni))   # worked not bad
     #mat.fcs <- (scale(mat.i)/scale(mat.ni))   # worked bad
 
     if (verbose) cat("\n the input matrix dimentions was ",dim(mat.norm),
