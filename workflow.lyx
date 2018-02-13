@@ -1,0 +1,171 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1cm
+\topmargin 1cm
+\rightmargin 1cm
+\bottommargin 1cm
+\headheight 1cm
+\headsep 1cm
+\footskip 1cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Data preprocessing
+\end_layout
+
+\begin_layout Subsubsection*
+Removing very low expressed genes
+\end_layout
+
+\begin_layout Standard
+We combined all data {lymI, lymnI, eczI, ecznI} and kept genes with cpm
+ > half in four or more samples.
+ Now we have 19961 genes.
+\end_layout
+
+\begin_layout Section
+Data Normalisation
+\end_layout
+
+\begin_layout Subsection
+DESeq
+\end_layout
+
+\begin_layout Subsection
+Voom
+\end_layout
+
+\begin_layout Subsubsection*
+Approach 1 : taking lesion / normal ratio
+\end_layout
+
+\begin_layout Standard
+We created two datasets: first for lym patients{lymI ,lymnI} and second
+ for ecz patients {eczI, ecznI}, normalized each using voom, took care that
+ pedigree (patient ID) matches, then divided them and added a class variable.
+\end_layout
+
+\begin_layout Standard
+
+\color teal
+Next, I will save a .rds of each data.frame I generate, so I don't need to
+ repeat everything again
+\end_layout
+
+\begin_layout Section
+Feature selection
+\end_layout
+
+\begin_layout Section
+Visualization of selected features
+\end_layout
+
+\begin_layout Subsection
+MRDs plot
+\end_layout
+
+\begin_layout Subsection
+barplot for selected genes
+\end_layout
+
+\begin_layout Standard
+Now, we made three plots in one grid.
+ First, for gene expression values.
+ Second, for comparing ratios.
+ Third, for comparing gene expression values after scaling ecz values and
+ lym values 
+\end_layout
+
+\begin_layout Standard
+separately.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename barplott.png
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -27,6 +27,7 @@ source("R/subproblem1_degs/method1_DESeq/read_eczema_data.R")
 use_top_fifty = FALSE
 source("R/subproblem1_degs/method1_DESeq/merge_eczema_lymphoma_data.R")
 
+new.data <- mat
 #register multicore parallel
 #library(TSA)
 #library(doMC)

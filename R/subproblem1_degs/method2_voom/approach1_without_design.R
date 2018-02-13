@@ -29,12 +29,33 @@ v_lym$pedigree <- colData(dds.lym)@listData$pedigree
 
 m = v_ecz[v_ecz$condition == "I",]
 n = v_ecz[v_ecz$condition == "nI",]
+matchh <- match(m$pedigree , n$pedigree)
+n = n[matchh,]
+sum(n$pedigree != m$pedigree)
+m$condition <- NULL
+m$pedigree <- NULL
+n$condition <- NULL
+n$pedigree <- NULL
 df_ecz <- m/n
-
-m = v_lym[v_lym$condition == "I",] %>% select(-condition)
-n = v_lym[v_lym$condition == "nI",] %>% select(-condition)
+df_ecz$class <- "ecz"
+#-------------------------------------------------------------------------------
+m = v_lym[v_lym$condition == "I",]
+n = v_lym[v_lym$condition == "nI",]
+matchh <- match(m$pedigree , n$pedigree)
+n = n[matchh,]
+sum(n$pedigree != m$pedigree)
+m$condition <- NULL
+m$pedigree <- NULL
+n$condition <- NULL
+n$pedigree <- NULL
 df_lym <- m/n
+df_lym$class <- "lym"
+#-------------------------------------------------------------------------------
+mat <- as.data.frame(rbind(df_lym, df_ecz))
 
+
+# Now we will change df to be new.data
+# and try caret again
 
 
 table(v_lym$lym_pedigree)
