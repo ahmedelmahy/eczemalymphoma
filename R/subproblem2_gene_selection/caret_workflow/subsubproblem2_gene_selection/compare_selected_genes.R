@@ -111,6 +111,7 @@ most_genes <- sample(union(union(eIlI,enIlnI),union(enIlI,eIlnI)),100)
 MDS_for_selected_genes(dds.ecz = dds.ecz,dds.lym = dds.lym,
                        sel_genes = list(most_genes,
                                         RF_up_selected_genes,
+                                        RF_smote_selected_genes,
                                         glm_up_selected_genes,
                                         eIlI,
                                         RF_i_enIlI_u_eIlnI,
@@ -119,6 +120,7 @@ MDS_for_selected_genes(dds.ecz = dds.ecz,dds.lym = dds.lym,
                                         RF_smote_selected_genes),
                        titles = c("random 100 genes",
                                   "RF_up_selected_genes",
+                                  "RF_smote_selected_genes",
                                   "glm_up_selected_genes",
                                   "eIlI",
                                   "RF_i_enIlI_u_eIlnI",
@@ -128,8 +130,8 @@ MDS_for_selected_genes(dds.ecz = dds.ecz,dds.lym = dds.lym,
                        include_only_disease = TRUE,measurement = "rpkm",ebg = ebg)
 
 
-i <-intersect(RF_smote_selected_genes,RF_up_selected_genes)
-compare_selected_features_barplot(features = i,dds.lym = dds.lym,
+i <-intersect(RF_smote_selected_genes,glm_up_selected_genes)
+compare_selected_features_barplot(features = glm_d_enIlI_u_eIlnI,dds.lym = dds.lym,
                                   lym.norm = lym.norm,ecz.norm = ecz.norm,
                                   dds.ecz = dds.ecz)
 

@@ -8,7 +8,10 @@ library(pROC) # for AUC calculations
 # configure caret
 # parameter tuning
 library(doMC)
-registerDoMC(cores = 3)
+registerDoMC(cores = 15)
+library(doParallel)
+cl <- makeCluster(20, type='PSOCK', outfile=" ")
+registerDoParallel(cl)
 # Create a stratified sample for repeated cv
 #cv_10_folds <- createMultiFolds(y_train_factor, k=10, times =2)
 #index = cv_10_folds

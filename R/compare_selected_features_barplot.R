@@ -1,5 +1,4 @@
 ### selected features in each patients
-
 compare_selected_features_barplot <- function(features,dds.lym,lym.norm,ecz.norm,dds.ecz){
     mat.norm <- lym.norm
     dds <- dds.lym
@@ -40,10 +39,19 @@ compare_selected_features_barplot <- function(features,dds.lym,lym.norm,ecz.norm
     plot.mat_ecz$class <- NULL
 
     plot_mat <- rbind(plot.mat_lym,plot.mat_ecz)
-    plot_mat$condition <- factor(plot_mat$conditio, levels = c("lymI", "lymnI","eczI", "ecznI" ))
+    min_lym <- plot_mat %>% filter(plot_mat$condition %in% c("lymI","lymnI")) %>%
+        group_by(pedigree,variable) %>% summarise(values = sum(value)) %>%
+        group_by(variable) %>% summarize(min(values))
+
+
+
+
+    plot_mat$condition <- factor(plot_mat$condition, levels = c("lymI", "lymnI","eczI", "ecznI" ))
     bar.cols <- brewer.pal(nlevels(factor(plot_mat$condition)), "Set1")
     p <- ggplot(plot_mat, aes(pedigree, value, fill=condition)) +
-        geom_col() + facet_grid(variable~.)+
+        geom_col() +
+        geom_hline(yintercept = min_lym$`min(values)`)+
+        facet_grid(variable~.)+
         scale_fill_manual(values=c(bar.cols))+
         labs(title="") + xlab("") + ylab("") +
         theme_bw() + theme(legend.title=element_blank())+

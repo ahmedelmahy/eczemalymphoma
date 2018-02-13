@@ -48,10 +48,10 @@ dds_ecznI_lymnI <- DESeqDataSetFromMatrix(countData = cts_ecznI_lymnI,
                                design= ~ condition )
 
 #-------------------------------------------------------------------------------
-dds_eczI_lymI <- DESeq(dds_eczI_lymI)
-dds_eczI_lymnI <- DESeq(dds_eczI_lymnI)
-dds_ecznI_lymI <- DESeq(dds_ecznI_lymI)
-dds_ecznI_lymnI<- DESeq(dds_ecznI_lymnI)
+dds_eczI_lymI <- DESeq(dds_eczI_lymI, parallel=TRUE,BPPARAM=MulticoreParam(20))
+dds_eczI_lymnI <- DESeq(dds_eczI_lymnI, parallel=TRUE,BPPARAM=MulticoreParam(20))
+dds_ecznI_lymI <- DESeq(dds_ecznI_lymI, parallel=TRUE,BPPARAM=MulticoreParam(20))
+dds_ecznI_lymnI<- DESeq(dds_ecznI_lymnI, parallel=TRUE,BPPARAM=MulticoreParam(20))
 
 #-------------------------------------------------------------------------------
 
