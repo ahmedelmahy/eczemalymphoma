@@ -7,7 +7,7 @@ cts_lym <- counts(dds_lym)
 d <- cbind(cts_ecz,cts_lym)
 d_DGEList <-  DGEList(counts=d)
 cpm <- cpm(d_DGEList)
-keep <- rowSums(cpm > .5) > 3
+keep <- rowSums(cpm > 3) > 15
 keep_genes <- rownames(d_DGEList)[keep]
 # using keep_genes
 cts_ecz2 <- cts_ecz[keep_genes,]
