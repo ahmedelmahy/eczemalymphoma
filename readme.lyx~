@@ -130,42 +130,5 @@ Next, I will save a .rds of each data.frame I generate, so I don't need to
  repeat everything again
 \end_layout
 
-\begin_layout Section
-Feature selection
-\end_layout
-
-\begin_layout Section
-Visualization of selected features
-\end_layout
-
-\begin_layout Subsection
-MRDs plot
-\end_layout
-
-\begin_layout Subsection
-barplot for selected genes
-\end_layout
-
-\begin_layout Standard
-Now, we made three plots in one grid.
- First, for gene expression values.
- Second, for comparing ratios.
- Third, for comparing gene expression values after scaling ecz values and
- lym values 
-\end_layout
-
-\begin_layout Standard
-separately.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename barplott.png
-
-\end_inset
-
-
-\end_layout
-
 \end_body
 \end_document
