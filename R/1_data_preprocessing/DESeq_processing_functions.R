@@ -4,7 +4,7 @@ getDEgenes <- function(ddsDESeqObject,padj_max = 0.01,lfc_min = 2,
                        verbose = FALSE){
     # change from DESeqDataSet object to DESeqResults object
     res <- results(ddsDESeqObject)
-    res.sel <- res [which(res$padj<padj_max &abs(res$log2FoldChange)>=lfc_min),]
+    res_sel <- res [which(res$padj<padj_max &abs(res$log2FoldChange)>=lfc_min),]
     if (verbose) {
         cat("summary of data when padj_max is ", padj_max)
         print(table(res$padj < padj_max))
@@ -19,9 +19,9 @@ getDEgenes <- function(ddsDESeqObject,padj_max = 0.01,lfc_min = 2,
     }
 
     # move rownames to listData(just a list of results)  inside
-    # res.sel(DESeqResults)
-    res.sel$entrez <- rownames(res.sel)
-    return(res.sel)
+    # res_sel(DESeqResults)
+    res_sel$entrez <- rownames(res_sel)
+    return(res_sel)
 }
 #-------------------------------------------------------------------------------
 # define getFPKMs which takes:
@@ -40,10 +40,10 @@ getFPKMs <- function(ddsDESeqObject, ebg, verbose = FALSE) {
     }
     # annotate the gene expression output with information about the genes
     # 1. subset ebg to include only genes in our DESeqDataSet
-    ebg.new <- ebg[which(names(ebg)%in%names(ddsDESeqObject)), ]
-    # 2. get the rowRanges from the ebg.new
+    ebg_new <- ebg[which(names(ebg)%in%names(ddsDESeqObject)), ]
+    # 2. get the rowRanges from the ebg_new
     # so now we have the number of exons and their length for every gene
-    rowRanges(ddsDESeqObject) <- ebg.new
+    rowRanges(ddsDESeqObject) <- ebg_new
     #
     # we use the rowRanges to find the "feature length" which is:
     #    number of basepairs in the union of all GRanges assigned to a given
@@ -51,44 +51,33 @@ getFPKMs <- function(ddsDESeqObject, ebg, verbose = FALSE) {
     #    e.g., the union of all basepairs of exons of a given gene.
     # feature length is used to calculate FPKM: fragments per kilobase per
     # million mapped fragments
-    mat.norm <- DESeq2::fpkm(ddsDESeqObject, robust=T)
-    # mat.norm is a matrix of the  genes x samples but now normalized
+    mat_norm <- DESeq2::fpkm(ddsDESeqObject, robust=T)
+    # mat_norm is a matrix of the  genes x samples but now normalized
     if (verbose) cat("now dimention of fpkm normalized matrix is ",
-                     dim(mat.norm))
-    return(mat.norm)
+                     dim(mat_norm))
+    return(mat_norm)
 }
 
-#-------------------------------------------------------------------------------
-# Define getFPKMFCs function to deal with paired data
-# which takes:
-# 1. mat.norm: a normalized gene expression matrix with fpkm
-# 2. ddsDESeqObject: the DESeqDataSet of the same experiment
-# returns a matrix of log2(treatment/ normal )
 
-
-
-getFPKMFCs <- function(mat.norm, ddsDESeqObject, verbose = FALSE) {
-    # remove spaces and use the sample id to be colname for mat.norm
-    # [question] here I assume pedigree is just the id of the sample
-    colnames(mat.norm) <- gsub("\\s+", "", colData(ddsDESeqObject)$pedigree)
-    # split the paired data into ni and i
-    mat.ni <- mat.norm[, colData(ddsDESeqObject)$condition=="nI"]
-    mat.i <- mat.norm[, colData(ddsDESeqObject)$condition=="I"]
-    # make sure mat.ni are the same samples as mat.i
-    mat.ni <- mat.ni[, colnames(mat.i)]
+getFPKMFCs <- function(mat_norm, ddsDESeqObject, verbose = FALSE) {
+    colnames(mat_norm) <- gsub("\\s+", "", colData(ddsDESeqObject)$pedigree)
+    mat_ni <- mat_norm[, colData(ddsDESeqObject)$condition=="nI"]
+    mat_i <- mat_norm[, colData(ddsDESeqObject)$condition=="I"]
+    # make sure mat_ni are the same samples as mat_i
+    mat_ni <- mat_ni[, colnames(mat_i)]
     # unify both by dividing
-    #mat.fcs <- log2((mat.i/mat.ni) + 1)
-    mat.fcs <- (scale(mat.i)-scale(mat.ni))   # worked not bad
-    #mat.fcs <- (scale(mat.i)/scale(mat.ni))   # worked bad
+    #mat_fcs <- log2((mat_i/mat_ni) + 1)
+    mat_fcs <- (scale(mat_i)-scale(mat_ni))   # worked not bad
+    #mat_fcs <- (scale(mat_i)/scale(mat_ni))   # worked bad
 
-    if (verbose) cat("\n the input matrix dimentions was ",dim(mat.norm),
-                     "\n mat.ni is ",dim(mat.ni),
-                     "\n mat.i is ",dim(mat.i), "and the output mat.fcs is",
-                     dim(mat.fcs) )
-    return(mat.fcs)
+    if (verbose) cat("\n the input matrix dimentions was ",dim(mat_norm),
+                     "\n mat_ni is ",dim(mat_ni),
+                     "\n mat_i is ",dim(mat_i), "and the output mat_fcs is",
+                     dim(mat_fcs) )
+    return(mat_fcs)
 }
 #
-# #dds <- dds.ecz
+# #dds <- dds_ecz
 # #n_test = n_test_ecz
 train_test_split <- function(dds, n_test){
     if(test_now) {
