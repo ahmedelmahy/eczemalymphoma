@@ -1,8 +1,13 @@
+
+#dds_ecz <- dds_ecz[which(colData(dds_ecz)@listData$pedigree != "10068"),]
+
 library(DESeq2)
 load("data/dds_ecz.rda")
 load("data/dds_lym.rda")
 load("data/ebg.rda")
-source("R/subproblem1_degs/method1_DESeq/DESeq_processing_functions.R")
+source("R/1_data_preprocessing/DESeq_processing_functions.R")
+
+
 ecz_sel <- getDEgenes(dds_ecz,verbose = T)
 ecz_norm <- getFPKMs (dds_ecz, ebg, verbose = TRUE)
 ecz_fcs <- getFPKMFCs(ecz_norm, dds_ecz,verbose = TRUE)
